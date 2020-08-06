@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+
+Globals:
+  Function:
+    CodeUri: .
+    Handler: bootstrap
+    Runtime: provided
+    Timeout: 5
+
+Resources:
+  GetProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{product_id}
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: dynamodb:GetItem
+              Resource: !GetAtt Table.Arn
+
+  GetProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: dynamodb:Scan
+              Resource: !GetAtt Table.Arn
+    Metadata:
+      BuildMethod: makefile
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL for Prod environment for First Function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"

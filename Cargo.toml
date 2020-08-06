@@ -1,0 +1,18 @@
+[package]
+name = "serverless-products"
+version = "0.1.0"
+authors = ["Nicolas Moutschen <nicolas.moutschen@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lambda = { git = "https://github.com/awslabs/aws-lambda-rust-runtime" }
+lambda_http = { git = "https://github.com/awslabs/aws-lambda-rust-runtime" }
+lazy_static = "1.4.0"
+rusoto_core = { version = "0.44.0", default-features = false, features = ["rustls"] }
+dynomite = { version = "0.9", default-features = false, features = ["rustls"] }
+serde = "1.0"
+serde_json = "1.0"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+tokio = { version = "0.2", features = ["full"] }
