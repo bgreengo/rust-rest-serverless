@@ -979,6 +979,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "products"
+version = "0.1.0"
+dependencies = [
+ "dynomite",
+ "lambda",
+ "lambda_http",
+ "lazy_static",
+ "rusoto_core",
+ "serde",
+ "serde_json",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1329,21 +1344,6 @@ dependencies = [
  "itoa",
  "serde",
  "url",
-]
-
-[[package]]
-name = "serverless-products"
-version = "0.1.0"
-dependencies = [
- "dynomite",
- "lambda",
- "lambda_http",
- "lazy_static",
- "rusoto_core",
- "serde",
- "serde_json",
- "tokio",
- "uuid",
 ]
 
 [[package]]

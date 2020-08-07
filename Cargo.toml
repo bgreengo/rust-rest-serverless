@@ -1,5 +1,5 @@
 [package]
-name = "serverless-products"
+name = "products"
 version = "0.1.0"
 authors = ["Nicolas Moutschen <nicolas.moutschen@gmail.com>"]
 edition = "2018"

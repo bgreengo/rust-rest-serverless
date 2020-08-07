@@ -1,23 +1,21 @@
 #[macro_use]
 extern crate lazy_static;
 
-use dynomite::{dynamodb::*, *};
+use dynomite::dynamodb::DynamoDbClient;
 use lambda_http::{
     handler,
     lambda::{self, Context},
     IntoResponse, Request, Response,
 };
 use rusoto_core::Region;
-use serde_json;
 use std::env;
-
-use serverless_products::Product;
+use std::sync::Arc;
 
 type Err = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 lazy_static! {
     static ref TABLE_NAME: String = env::var("TABLE_NAME").unwrap();
-    static ref DYNAMODB: DynamoDbClient = DynamoDbClient::new(Region::default());
+    static ref DYNAMODB: Arc<DynamoDbClient> = Arc::new(DynamoDbClient::new(Region::default()));
 }
 
 #[tokio::main]
@@ -28,20 +26,7 @@ async fn main() -> Result<(), Err> {
 }
 
 async fn get_products(_event: Request, _ctx: Context) -> Result<impl IntoResponse, Err> {
-    let products: Vec<Product> = DYNAMODB
-        .scan(ScanInput {
-            table_name: TABLE_NAME.to_string(),
-            ..ScanInput::default()
-        })
-        .await
-        .map(|output| {
-            output
-                .items
-                .unwrap_or_default()
-                .into_iter()
-                .flat_map(|item| Product::from_attrs(item.clone()))
-                .collect()
-        })?;
+    let products = products::get_products(DYNAMODB.clone(), &TABLE_NAME).await?;
 
     Ok(Response::builder()
         .status(200)

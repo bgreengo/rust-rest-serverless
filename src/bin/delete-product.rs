@@ -5,7 +5,7 @@ use dynomite::dynamodb::DynamoDbClient;
 use lambda_http::{
     handler,
     lambda::{self, Context},
-    IntoResponse, Request, RequestExt, Response,
+    IntoResponse, Request, RequestExt,
 };
 use rusoto_core::Region;
 use std::env;
@@ -21,26 +21,19 @@ lazy_static! {
 
 #[tokio::main]
 async fn main() -> Result<(), Err> {
-    lambda::run(handler(get_product)).await?;
+    lambda::run(handler(delete_product)).await?;
 
     Ok(())
 }
 
-async fn get_product(event: Request, _ctx: Context) -> Result<impl IntoResponse, Err> {
+async fn delete_product(event: Request, _ctx: Context) -> Result<impl IntoResponse, Err> {
     let path_parameters = event.path_parameters();
     let id = path_parameters
         .get("product_id")
         .expect("could not get product id");
     let id = Uuid::parse_str(&id)?;
 
-    let product = products::get_product(DYNAMODB.clone(), &TABLE_NAME, id).await?;
+    products::delete_product(DYNAMODB.clone(), &TABLE_NAME, id).await?;
 
-    Ok(match product {
-        Some(product) => Response::builder()
-            .status(200)
-            .body(serde_json::to_string(&product)?)?,
-        None => Response::builder()
-            .status(404)
-            .body("Product not found".to_string())?,
-    })
+    Ok("Product deleted")
 }

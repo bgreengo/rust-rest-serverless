@@ -10,6 +10,44 @@ Globals:
     Timeout: 5
 
 Resources:
+  CreateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: POST
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: dynamodb:PutItem
+              Resource: !GetAtt Table.Arn
+
+  DeleteProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{product_id}
+            Method: DELETE
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: dynamodb:DeleteItem
+              Resource: !GetAtt Table.Arn
+
   GetProductFunction:
     Type: AWS::Serverless::Function
     Properties:
