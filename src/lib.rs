@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 type Err = Box<dyn std::error::Error + Send + Sync + 'static>;
 
-#[derive(Debug, Serialize, Deserialize, Item, Clone)]
+#[derive(Debug, Serialize, Deserialize, Item, Clone, PartialEq)]
 pub struct Product {
     #[dynomite(partition_key)]
     pub id: Option<Uuid>,
