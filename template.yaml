@@ -6,7 +6,7 @@ Globals:
   Function:
     CodeUri: .
     Handler: bootstrap
-    Runtime: provided
+    Runtime: provided.al2
     Timeout: 5
 
 Resources:
